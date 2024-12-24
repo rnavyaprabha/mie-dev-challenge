@@ -1,9 +1,24 @@
+
 <%- include('partials/header.ejs') %>
 
-<div>
-	TODO: Display list of board games
+<div class="container">
+  <h2>Available Games</h2>
+  <% if (games && games.length > 0) { %>
+    <ul class="games-list" style="list-style: none; padding: 0;">
+      <% games.forEach(game => { %>
+        <li style="border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between;">
+          <div>
+            <h3 style="margin: 0; font-size: 20px; font-weight: bold;"><%= game.title %></h3>
+            <p><strong>Genre:</strong> <%= game.genre %></p>
+            <p><strong>Description:</strong> <%= game.description %></p>
+            <p><strong>Player Count:</strong> <%= game.min_players %> - <%= game.max_players %></p>
+            <p><strong>Rating:</strong> <%= game.rating %></p>
+            <p><strong>Difficulty Level:</strong> <%= game.difficulty_level %></p>
+          </div>
+        </li>
+      <% }); %>
+    </ul>
+  <% } else { %>
+    <p>No games available - add a game!</p>
+  <% } %>
 </div>
-
-<a href="/add-game">Add Game</a>
-
-<%- include ('partials/footer.ejs') %>

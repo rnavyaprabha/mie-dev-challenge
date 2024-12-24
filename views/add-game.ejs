@@ -1,5 +1,36 @@
-<%- include ('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 
-TODO: Make a form for adding a game
+    <div class="container">
+        <h2>Add a New Game</h2>
+        <form action="/add-game" method="post">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" required>
 
-<%- include ('partials/footer.ejs') %>
+            <label for="genre">Genre</label>
+            <input type="text" class="form-control" id="genre" name="genre" required>
+    
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+
+            <label for="minPlayers">Minimum Players:</label>
+            <input type="number" id="minPlayers" name="minPlayers" required>
+
+            <label for="maxPlayers">Maximum Players:</label>
+            <input type="number" id="maxPlayers" name="maxPlayers" required>
+
+            <label for="rating">Rating</label>
+            <input type="number" step="0.1" min="0" max="5" class="form-control" id="rating" name="rating" required>
+            
+            <label for="difficulty_level">Difficulty Level</label>
+            <select class="form-control" id="difficulty_level" name="difficulty_level" required>
+                <option value="Easy">Easy</option>
+                <option value="Medium">Medium</option>
+                <option value="Hard">Hard</option>
+            </select>
+
+            <button type="submit">Add Game</button>
+        </form>
+    </div>
+
+    <%- include('partials/footer.ejs') %>
