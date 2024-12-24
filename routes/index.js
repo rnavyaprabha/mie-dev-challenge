@@ -1,16 +1,22 @@
 module.exports = {
-	getHomePage: (req, res) => {
-		// TODO: Make query for games list
-		let query = "SELECT 1 AS t";
+	getHomePage: async (req, res) => {
+		let connection;
 
-		db.query(query, (err, result) => {
-			if (err) {
-				res.redirect('/');
+		try {
+			connection = await pool.getConnection();
+
+			const [games] = await Promise.all([
+				connection.query('SELECT * FROM Games'),
+			]);
+
+			res.render('index', { games,title: 'Board Games' });
+		} catch (err) {
+			console.error('Error fetching data:', err);
+			res.render('index', { games: [],title: 'Board Games' });
+		} finally {
+			if (connection) {
+				connection.release(); // Release the connection back to the pool
 			}
-			res.render('index.ejs', {
-				title: 'Board Games | View Games',
-				players: result
-			});
-		});
-	}
+		}
+	},
 };
