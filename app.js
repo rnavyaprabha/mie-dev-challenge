@@ -48,6 +48,7 @@ app.get('/add-game', game.getAdd);
 app.post('/add-game', game.postAdd);
 app.get('/edit-game/:id', game.getEdit);
 app.post('/edit-game/:id', game.postEdit);
+app.post('/delete-game/:id', game.postDelete);
 app.get('/add-game-session', game_session.getAdd);
 app.post('/add-game-session', game_session.postAdd);
 
