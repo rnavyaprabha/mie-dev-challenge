@@ -1,0 +1,57 @@
+<%- include('partials/header.ejs') %>
+
+<div class="container">
+    <h2>Edit Game Session</h2>
+    <form action="/edit-game-session/<%= session.session_id %>" method="post">
+        <!-- Game Selection -->
+        <label for="gameId">Game:</label>
+        <select id="gameId" name="gameId" required>
+            <!-- Iterates over the available games and creates an option for each -->
+            <% games.forEach(game => { %>
+                <option value="<%= game.game_id %>" <%= game.game_id === session.game_id ? 'selected' : '' %>>
+                    <%= game.title %>
+                </option>
+            <% }); %>
+        </select>
+
+        <!-- Date Played -->
+        <label for="sessionDate">Date Played:</label>
+        <input type="date" id="sessionDate" name="sessionDate" value="<%= session.session_date %>" required>
+
+        <!-- Start Time -->
+        <label for="startTime">Start Time:</label>
+        <input type="time" id="startTime" name="startTime" value="<%= session.start_time %>" required>
+
+        <!-- End Time -->
+        <label for="endTime">End Time:</label>
+        <input type="time" id="endTime" name="endTime" value="<%= session.end_time %>" required>
+
+        <!-- Total Players -->
+        <label for="totalPlayers">Total Players:</label>
+        <input type="number" id="totalPlayers" name="totalPlayers" value="<%= session.total_players %>" required>
+
+        <!-- Player Names -->
+        <label for="playerNames">Player Names (comma-separated):</label>
+        <input type="text" id="playerNames" name="playerNames" value="<%= session.player_names %>" required>
+
+        <!-- Player Scores -->
+        <label for="playerScores">Player Scores (comma-separated):</label>
+        <input type="text" id="playerScores" name="playerScores" value="<%= session.player_scores %>" required>
+
+        <!-- Highest Score -->
+        <label for="highestScore">Highest Score:</label>
+        <input type="number" id="highestScore" name="highestScore" value="<%= session.highest_score %>" required>
+
+        <!-- Winner -->
+        <label for="winner">Winner:</label>
+        <input type="text" id="winner" name="winner" value="<%= session.winner %>" required>
+
+        <!-- Comments -->
+        <label for="comments">Comments:</label>
+        <textarea id="comments" name="comments" rows="4"><%= session.comments %></textarea>
+
+        <button type="submit">Update Session</button>
+    </form>
+</div>
+
+<%- include('partials/footer.ejs') %>
