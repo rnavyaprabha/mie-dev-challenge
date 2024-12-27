@@ -1,5 +1,55 @@
-<%- include ('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 
-TODO: Make a form for adding a game-playing session
+    <div class="container">
+        <h2>Add Game Session</h2>
+        <form action="/add-game-session" method="post">
+            <label for="gameId">Game:</label>
+            <select id="gameId" name="gameId" required>
+                <!-- Iterates over the available games and creates an option for each -->
+                <% games.forEach(game=> { %>
+                    <option value="<%= game.game_id %>">
+                        <%= game.title %>
+                    </option>
+                    <% }); %>
+            </select>
 
-<%- include ('partials/footer.ejs') %>
+            
+            <label for="sessionDate">Date Played:</label>
+            <input type="date" id="sessionDate" name="sessionDate" required>
+            
+             <!-- Start Time -->
+            <label for="startTime">Start Time:</label>
+            <input type="time" id="startTime" name="startTime" required>
+
+            <!-- End Time -->
+            <label for="endTime">End Time:</label>
+            <input type="time" id="endTime" name="endTime" required>
+
+            <!-- Total Players -->
+            <label for="totalPlayers">Total Players:</label>
+            <input type="number" id="totalPlayers" name="totalPlayers" required>
+     
+            <!-- Player Names -->
+           <label for="playerNames">Player Names (comma-separated):</label>
+           <input type="text" id="playerNames" name="playerNames" required>
+
+           <!-- Player Scores -->
+           <label for="playerScores">Player Scores (comma-separated):</label>
+           <input type="text" id="playerScores" name="playerScores" required>
+  
+           <!-- Highest Score -->
+           <label for="highestScore">Highest Score:</label>
+           <input type="number" id="highestScore" name="highestScore" required>
+
+           <!-- Winner -->
+           <label for="winner">Winner:</label>
+           <input type="text" id="winner" name="winner" required>
+
+            <label for="comments">Comments:</label>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+
+            <button type="submit">Add Session</button>
+        </form>
+    </div>
+
+    <%- include('partials/footer.ejs') %>
