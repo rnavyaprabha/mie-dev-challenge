@@ -29,7 +29,7 @@ module.exports = {
 	  let connection;
 	  const {
 		gameId,
-		sessionDate,
+		session_date,
 		startTime,
 		endTime,
 		totalPlayers,
@@ -49,7 +49,7 @@ module.exports = {
 		  'INSERT INTO GameSessions (game_id, session_date, start_time, end_time, total_players, player_names, player_scores, highest_score, winner, comments) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
 		  [
 			gameId,
-			sessionDate,
+			session_date,
 			startTime,
 			endTime,
 			totalPlayers,
@@ -62,7 +62,7 @@ module.exports = {
 		);
   
 		console.log('Game session added successfully');
-		res.redirect('/'); // Redirect to the home page after adding a game session successfully
+		res.redirect('/game-history'); // Redirect to the home page after adding a game session successfully
 	  } catch (err) {
 		console.error('Error adding game session:', err);
 		res.redirect('/add-game-session'); // Redirect to the add-game-session page in case of an error
@@ -75,23 +75,29 @@ module.exports = {
 	},
 	
 	// Route to show the form for editing an existing game session
+	
 	getEdit: async (req, res) => {
-	  const { sessionId } = req.params;
+	  const { session_id } = req.params;
 	  let connection;
-  
+	
 	  try {
 		connection = await pool.getConnection();
-		const games = await connection.query('SELECT game_id, title FROM Games');
-		const [session] = await connection.query('SELECT * FROM GameSessions WHERE session_id = ?', [sessionId]);
-  
-		if (!session) {
+		const sessions = await connection.query('SELECT * FROM GameSessions WHERE session_id = ?', [session_id]);
+	
+		if (sessions.length === 0) {
 		  return res.status(404).send('Game session not found');
 		}
-  
+	
+		const session = sessions[0];
+		 // Format the session_date to YYYY-MM-DD format for the input field
+		const formattedSessionDate = new Date(session.session_date).toISOString().split('T')[0];
+		 
+		const games = await connection.query('SELECT game_id, title FROM Games');
+	
 		res.render('edit-game-session.ejs', {
 		  title: 'Board Games | Edit Game Session',
 		  games,
-		  session, // Pass the existing session data to pre-fill the form
+		  session: { ...session, session_date: formattedSessionDate }, // Pass the existing session data to pre-fill the form
 		});
 	  } catch (err) {
 		console.error('Error fetching data for session edit:', err);
@@ -103,14 +109,15 @@ module.exports = {
 		}
 	  }
 	},
+	
   
 	// Process the form submission for editing a game-playing session
 	postEdit: async (req, res) => {
-	  const { sessionId } = req.params;
+	  const { session_id } = req.params;
 	  let connection;
 	  const {
 		gameId,
-		sessionDate,
+		session_date,
 		startTime,
 		endTime,
 		totalPlayers,
@@ -129,7 +136,7 @@ module.exports = {
 		  'UPDATE GameSessions SET game_id = ?, session_date = ?, start_time = ?, end_time = ?, total_players = ?, player_names = ?, player_scores = ?, highest_score = ?, winner = ?, comments = ? WHERE session_id = ?',
 		  [
 			gameId,
-			sessionDate,
+			session_date,
 			startTime,
 			endTime,
 			totalPlayers,
@@ -138,15 +145,15 @@ module.exports = {
 			highestScore,
 			winner,
 			comments,
-			sessionId,
+			session_id,
 		  ]
 		);
   
 		console.log('Game session updated successfully');
-		res.redirect(`/game-session/${sessionId}`); // Redirect to the updated game session page
+		res.redirect('/game-history'); // Redirect to the updated game session page
 	  } catch (err) {
 		console.error('Error updating game session:', err);
-		res.redirect(`/edit-game-session/${sessionId}`); // Redirect back to the edit page in case of an error
+		res.redirect(`/edit-game-session/${session_id}`); // Redirect back to the edit page in case of an error
 	  } finally {
 		if (connection) {
 		  connection.release(); // Release the connection back to the pool
@@ -156,7 +163,7 @@ module.exports = {
 	},
   
 	// Delete a game session
-	deleteGameSession: async (req, res) => {
+	postDelete: async (req, res) => {
 	  const { session_id } = req.params;
 	  let connection;
   
@@ -167,10 +174,10 @@ module.exports = {
 		await connection.query('DELETE FROM GameSessions WHERE session_id = ?', [session_id]);
   
 		console.log('Game session deleted successfully');
-		res.redirect('/');
+		res.redirect('/game-history');
 	  } catch (err) {
 		console.error('Error deleting game session:', err);
-		res.redirect('/');
+		res.redirect('/game-history');
 	  } finally {
 		if (connection) {
 		  connection.release(); // Release the connection back to the pool
