@@ -1,9 +1,28 @@
+// routes/game.js
+const multer = require('multer');
+const path = require('path');
+
+// Configure storage for GIF uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './public/gifs'); // Store GIFs in the 'public/gifs' directory
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Create a unique filename
+    }
+});
+
+
+// Initialize multer upload middleware
+const upload = multer({ storage: storage });
+
 module.exports = {
 	getAdd: (req, res) => {
 		res.render('add-game.ejs', {
 			title: 'Board Games | Add game'
 		});
 	},
+
 	// Render the edit game form
 	getEdit: (req, res) => {
 		const gameId = req.params.id;
@@ -35,75 +54,98 @@ module.exports = {
 			;
 	},
 
-	postAdd: (req, res) => {
-		// Extract game information from the form submission
-		const { title, genre, description, minPlayers, maxPlayers, rating, difficulty_level } = req.body;
-		
-     
-		let connection;
+	// Add a new game with GIF upload
+postAdd: (req, res) => {
+    upload.single('gif')(req, res, (err) => {
+        if (err) {
+            console.error('Error uploading GIF:', err);
+            return res.redirect('/add-game'); // Redirect back if error occurs
+        }
 
-		// Use the connection pool to insert a new game into the database
-		pool.getConnection()
-			.then(conn => {
-				connection = conn;
-				return connection.query(
-                    'INSERT INTO Games (title, genre, description, min_players, max_players, rating, difficulty_level) VALUES (?, ?, ?, ?, ?, ?,?)',
-                    [title, genre, description, minPlayers, maxPlayers, rating, difficulty_level]
-    
-				);
-			})
-			.then(() => {
-				console.log('Game added successfully');
-				res.redirect('/'); // Redirect to the home page after adding a game
-			})
-			.catch(err => {
-				console.error('Error adding game:', err);
-				res.redirect('/add-game'); // Redirect to the add-game page in case of an error
-			})
-			.finally(() => {
-				if (connection) {
-					connection.release(); // Release the connection back to the pool
-					console.log('connection released - postAdd in game.js');
+        const { title, genre, description, minPlayers, maxPlayers, rating, difficulty_level } = req.body;
+        let connection;
+        let gifUrl = null;
 
-				}
-			})
-			;
-	},
-	// Process the edit game form submission
-	postEdit: (req, res) => {
-		const gameId = req.params.id;
-		const { title, genre, description, minPlayers, maxPlayers, rating, difficulty_level } = req.body;
-		let connection;
-        let gameImage = req.file ? req.file.path : null; // Handle the uploaded image if present
+        if (req.file) {
+            gifUrl = `/gifs/${req.file.filename}`; // Store the relative path to the GIF
+        }
 
-		// Use the connection pool to update the game in the database
-		pool.getConnection()
-			.then(conn => {
-				connection = conn;
-				// If a new image is uploaded, update the game with the new image
-                let query = 'UPDATE Games SET title=?, genre=?, description=?, min_players=?, max_players=?, rating=?, difficulty_level=?';
-                let queryParams = [title, genre, description, minPlayers, maxPlayers, rating, difficulty_level];
-                query += ' WHERE game_id=?';
-                queryParams.push(gameId);
+        // Use database connection to insert game details
+        pool.getConnection()
+            .then(conn => {
+                connection = conn;
+                return connection.query(
+                    'INSERT INTO Games (title, genre, description, min_players, max_players, rating, difficulty_level, gif_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+                    [title, genre, description, minPlayers, maxPlayers, rating, difficulty_level, gifUrl]
+                );
+            })
+            .then(() => {
+                res.redirect('/'); // Redirect to homepage after adding game
+            })
+            .catch(err => {
+                console.error('Error adding game:', err);
+                res.redirect('/add-game'); // Redirect back if error occurs
+            })
+            .finally(() => {
+                if (connection) {
+                    connection.release();
+                }
+            });
+    });
+},
+
+postEdit: (req, res) => {
+    upload.single('gif')(req, res, (err) => {
+        if (err) {
+            console.error('Error uploading GIF:', err);
+            return res.redirect(`/edit-game/${req.params.id}`);
+        }
+
+        const gameId = req.params.id;
+        const { title, genre, description, minPlayers, maxPlayers, rating, difficulty_level } = req.body;
+        let connection;
+        let gifUrl = req.file ? `/gifs/${req.file.filename}` : null;
+
+        pool.getConnection()
+            .then(conn => {
+                connection = conn;
+
+                // Fetch the current game details to check existing GIF
+                return connection.query('SELECT gif_url FROM Games WHERE game_id = ?', [gameId]);
+            })
+            .then(results => {
+                if (results.length === 0) {
+                    throw new Error('Game not found.');
+                }
+
+                const currentGifUrl = results[0].gif_url;
+
+                // If no new GIF is uploaded, retain the old GIF URL
+                gifUrl = gifUrl || currentGifUrl;
+
+                const query = `
+                    UPDATE Games 
+                    SET title=?, genre=?, description=?, min_players=?, max_players=?, rating=?, difficulty_level=?, gif_url=? 
+                    WHERE game_id=?
+                `;
+
+                const queryParams = [title, genre, description, minPlayers, maxPlayers, rating, difficulty_level, gifUrl, gameId];
 
                 return connection.query(query, queryParams);
             })
-			.then(() => {
-				res.redirect('/'); // Redirect to home after editing
-			})
-			.catch(err => {
-				console.error('Error editing game:', err);
-				res.redirect('/');
-			})
-			.finally(() => {
-				if (connection) {
-					connection.release(); // Release the connection back to the pool
-					console.log('connection released - postEdit in game.js');
+            .then(() => {
+                res.redirect('/');
+            })
+            .catch(err => {
+                console.error('Error editing game:', err);
+                res.redirect(`/edit-game/${gameId}`);
+            })
+            .finally(() => {
+                if (connection) connection.release();
+            });
+    });
+},
 
-				}
-			})
-			;
-	},
 	// Handle the delete game operation
 	postDelete: (req, res) => {
 		const gameId = req.params.id;
@@ -136,4 +178,3 @@ module.exports = {
 			;
 	}
 };
-
