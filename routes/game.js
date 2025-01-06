@@ -50,8 +50,7 @@ module.exports = {
 					connection.release(); // Release the connection back to the pool
 					console.log('connection released - getEdit in game.js');
 				}
-			})
-			;
+			});
 	},
 
 	// Add a new game with GIF upload
@@ -94,6 +93,7 @@ postAdd: (req, res) => {
     });
 },
 
+// Edited game details 
 postEdit: (req, res) => {
     upload.single('gif')(req, res, (err) => {
         if (err) {
@@ -174,7 +174,6 @@ postEdit: (req, res) => {
 					console.log('connection released - postDelete in game.js');
 
 				}
-			})
-			;
+			});
 	}
 };

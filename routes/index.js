@@ -12,17 +12,18 @@ module.exports = {
 				connection.query('SELECT * FROM Games ORDER BY created_at DESC'),
 				connection.query(
 					`SELECT gs.*
-					FROM GameSessions gs
-					INNER JOIN (
-						SELECT game_id, MAX(session_date) AS latest_date
-						FROM GameSessions
-						GROUP BY game_id
-					) latest
-					ON gs.game_id = latest.game_id AND gs.session_date = latest.latest_date`
+                    FROM GameSessions gs
+                    INNER JOIN (
+                    SELECT game_id, MAX(CONCAT(session_date, ' ', start_time)) AS latest_datetime
+                    FROM GameSessions
+                    GROUP BY game_id
+                    ) latest
+                    ON gs.game_id = latest.game_id
+                    AND CONCAT(gs.session_date, ' ', gs.start_time) = latest.latest_datetime`
+
 				),
 			]);
-			
-
+	
 			// Map the latest session to the respective game
 			const gamesWithLatestSession = games.map(game => {
 				const latestSession = latestSessions.find(session => session.game_id === game.game_id);
@@ -40,7 +41,6 @@ module.exports = {
 		}
 	},
 	
-
 	// Display game history page
 getGameHistoryPage: async (req, res) => {
     let connection;
@@ -72,8 +72,7 @@ getGameHistoryPage: async (req, res) => {
         if (connection) connection.release();
     }
 },
-
-
+	// Handle the delete game session operation
 	deleteGameSession: async (req, res) => {
 		const { session_id } = req.params;
 
