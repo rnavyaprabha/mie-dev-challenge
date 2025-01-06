@@ -8,7 +8,6 @@ module.exports = {
 		// Fetch available games to populate the dropdown
 		connection = await pool.getConnection();
 		const games = await connection.query('SELECT game_id, title FROM Games');
-  
 		res.render('add-game-session.ejs', {
 		  title: 'Board Games | Add Game Session',
 		  games,
@@ -40,7 +39,6 @@ module.exports = {
 		comments,
 	  } = req.body;
   
-	  
 	  try {
 		connection = await pool.getConnection();
   
@@ -75,7 +73,6 @@ module.exports = {
 	},
 	
 	// Route to show the form for editing an existing game session
-	
 	getEdit: async (req, res) => {
 	  const { session_id } = req.params;
 	  let connection;
@@ -91,7 +88,6 @@ module.exports = {
 		const session = sessions[0];
 		 // Format the session_date to YYYY-MM-DD format for the input field
 		const formattedSessionDate = new Date(session.session_date).toISOString().split('T')[0];
-		 
 		const games = await connection.query('SELECT game_id, title FROM Games');
 	
 		res.render('edit-game-session.ejs', {
@@ -166,13 +162,10 @@ module.exports = {
 	postDelete: async (req, res) => {
 	  const { session_id } = req.params;
 	  let connection;
-  
 	  try {
 		connection = await pool.getConnection();
-  
 		// Delete the game session from the 'GameSessions' table
 		await connection.query('DELETE FROM GameSessions WHERE session_id = ?', [session_id]);
-  
 		console.log('Game session deleted successfully');
 		res.redirect('/game-history');
 	  } catch (err) {
