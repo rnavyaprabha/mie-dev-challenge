@@ -1,55 +1,75 @@
-
 <%- include('partials/header.ejs') %>
-
-<div class="container">
-  <h2>Available Games</h2>
-  <% if (games && games.length > 0) { %>
-    <ul class="games-list" style="list-style: none; padding: 0;">
-      <% games.forEach(game => { %>
-        <li style="border: 1px solid #ddd; margin-bottom: 15px; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); display: flex; justify-content: space-between;">
-          <div>
-            <h3 style="margin: 0; font-size: 20px; font-weight: bold;"><%= game.title %></h3>
-            <p><strong>Genre:</strong> <%= game.genre %></p>
-            <p><strong>Description:</strong> <%= game.description %></p>
-            <p><strong>Player Count:</strong> <%= game.min_players %> - <%= game.max_players %></p>
-            <p><strong>Rating:</strong> <%= game.rating %></p>
-            <p><strong>Difficulty Level:</strong> <%= game.difficulty_level %></p>
-          </div>
-          <div style="display: flex; gap: 10px;">
-            <a href="/edit-game/<%= game.game_id %>">
-              <button style="background-color: #007bff; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
-                <i class='fas fa-edit'></i> Edit
-              </button>
-            </a>
-            <button onclick="openDeletePopup('<%= game.game_id %>')" style="background-color: #dc3545; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">
-              <i class='fas fa-trash-alt'></i> Delete
-            </button>
-          </div>
-        </li>
-      <% }); %>
-    </ul>
-  <% } else { %>
-    <p>No games available - add a game!</p>
-  <% } %>
-</div>
-
+      <div class="container">
+        <h2>Available Games</h2>
+        <% if (games && games.length > 0) { %>
+          <ul class="games-list">
+            <% games.forEach(game => { %>
+              <li>
+                <div>
+                  <h3><%= game.title %></h3>
+                  <img src="<%= game.gif_url %>" alt="<%= game.title %> GIF" class="game-gif">
+                  <p><strong>Genre:</strong> <%= game.genre %></p>
+                  <p><strong>Description:</strong> <%= game.description %></p>
+                  <p><strong>Player Count:</strong> <%= game.min_players %> - <%= game.max_players %></p>
+                  <p><strong>Rating:</strong> <%= game.rating %></p>
+                  <p><strong>Difficulty Level:</strong> <%= game.difficulty_level %></p>
+                  <!-- Displaying the latest session details if available -->
+                  <% if (game.latestSession) { %>
+                    <div class="game-session">
+                      <!-- Formatting the session date into a readable format -->
+                      <p><strong>Recent Session:</strong> <%= new Date(game.latestSession.session_date).toLocaleDateString() %></p>
+                       <!-- Formatting the start and end times into a 12-hour format -->
+                      <p><strong>Session Time:</strong> <%= new Date(`1970-01-01T${game.latestSession.start_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %> 
+                        to <%= new Date(`1970-01-01T${game.latestSession.end_time}`).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %></p>
+                      <p><strong>Recent Highest Score:</strong> <%= game.latestSession.highest_score %></p>
+                      <p><strong>Recent Winner:</strong> <%= game.latestSession.winner %></p>
+                    </div>
+                  <% } else { %>
+                    <!-- Message shown when there is no recent session for the game -->
+                    <p>No sessions available for this game.</p>
+                  <% } %>
+                </div>
+                
+                <!-- Button container for editing and deleting games -->
+                <div class="button-container">
+                  <a href="/edit-game/<%= game.game_id %>" class="full-width-link">
+                    <button class="edit-button">
+                      <i class='fas fa-edit'></i> Edit
+                    </button>
+                  </a>
+                  <button onclick="openDeletePopup('<%= game.game_id %>')" class="delete-button">
+                    <i class='fas fa-trash-alt'></i> Delete
+                  </button>
+                </div>
+                
+              </li>
+              
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <!-- Message shown when there are no games available -->
+          <p>No games available - add a game!</p>
+        <% } %>
+      </div>
+      
 <!-- Delete Confirmation Popup -->
-<div id="deletePopup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border: 1px solid #ddd; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); z-index: 1000; text-align: center;">
-  <p style="font-size: 16px;">Are you sure you want to delete this game?</p>
+<div id="deletePopup">
+  <p>Are you sure you want to delete this game?</p>
   <form id="deleteForm" action="" method="post">
-    <button type="submit" style="background-color: #dc3545; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; margin-right: 10px;">Yes, Delete</button>
-    <button type="button" onclick="closeDeletePopup()" style="background-color: #6c757d; color: #fff; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Cancel</button>
+    <button type="submit">Yes, Delete</button>
+    <button type="button" onclick="closeDeletePopup()">Cancel</button>
   </form>
 </div>
 
 <%- include('partials/footer.ejs') %>
 
 <script>
+  // Function to open the delete confirmation popup and set the action URL dynamically
   function openDeletePopup(gameId) {
     document.getElementById('deletePopup').style.display = 'block';
     document.getElementById('deleteForm').action = '/delete-game/' + gameId;
   }
-
+ // Function to close the delete confirmation popup
   function closeDeletePopup() {
     document.getElementById('deletePopup').style.display = 'none';
   }
