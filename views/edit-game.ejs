@@ -1,5 +1,43 @@
-<%- include ('partials/header.ejs') %>
+<%- include('partials/header.ejs') %>
 
-TODO: Make a form for editing a game
+  <div class="container">
+    <h2 style="text-align: center;">Edit Game</h2>
+    <form action="/edit-game/<%= game.game_id %>" method="post" >
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" value="<%= game.title %>" required>
 
-<%- include ('partials/footer.ejs') %>
+      <!-- Genre -->
+      <label for="genre">Genre:</label>
+      <input type="text" id="genre" name="genre" value="<%= game.genre %>" required>
+
+
+      <label for="description">Description:</label>
+      <textarea id="description" name="description" rows="4" required><%= game.description %></textarea>
+
+      <label for="minPlayers">Minimum Players:</label>
+      <input type="number" id="minPlayers" name="minPlayers" value="<%= game.min_players %>" required>
+
+      <label for="maxPlayers">Maximum Players:</label>
+      <input type="number" id="maxPlayers" name="maxPlayers" value="<%= game.max_players %>" required>
+
+      <!-- Rating -->
+      <label for="rating">Rating:</label>
+      <input type="number" step="0.1" min="0" max="5" id="rating" name="rating" value="<%= game.rating %>" required>
+ 
+      <!-- Difficulty Level -->
+      <label for="difficulty_level">Difficulty Level:</label>
+      <select id="difficulty_level" name="difficulty_level" required>
+        <option value="Easy" <%= game.difficulty_level === 'Easy' ? 'selected' : '' %>>Easy</option>
+        <option value="Medium" <%= game.difficulty_level === 'Medium' ? 'selected' : '' %>>Medium</option>
+        <option value="Hard" <%= game.difficulty_level === 'Hard' ? 'selected' : '' %>>Hard</option>
+      </select>
+ 
+    
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+
+  <%- include('partials/footer.ejs') %>
+
+  

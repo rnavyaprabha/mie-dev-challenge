@@ -12,6 +12,7 @@ const { getHomePage,getGameHistoryPage } = require('./routes/index');
 const game = require('./routes/game');
 const game_session = require('./routes/game_session');
 
+
 const port = config.port; //port 3000
 
 // Database Setup
@@ -45,6 +46,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+
 // Routes
 app.get('/', getHomePage);
 app.get('/game-history', getGameHistoryPage);
@@ -55,9 +57,6 @@ app.post('/edit-game/:id', game.postEdit);
 app.post('/delete-game/:id', game.postDelete);
 app.get('/add-game-session', game_session.getAdd);
 app.post('/add-game-session', game_session.postAdd);
-app.get('/edit-game-session/:session_id', game_session.getEdit);
-app.post('/edit-game-session/:session_id', game_session.postEdit);
-app.post('/delete-game-session/:session_id', game_session.postDelete); 
 
 // Start the server
 app.listen(port, () => {
