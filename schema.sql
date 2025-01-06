@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS Games (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 -- GameSessions Table
 CREATE TABLE IF NOT EXISTS GameSessions (
     session_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -32,13 +31,10 @@ CREATE TABLE IF NOT EXISTS GameSessions (
     highest_score INT,
     winner VARCHAR(255),
     comments TEXT,
-    FOREIGN KEY (game_id) REFERENCES Games(game_id) ON DELETE CASCADE
+    FOREIGN KEY (game_id) REFERENCES Games(game_id) ON DELETE CASCADE -- all corresponding rows in the current table that reference the deleted game_id will also be automatically deleted.
 );
 
-
-
-
--- Insert sample data into Games table with GIF URLs
+-- Insert sample data into Games table
 INSERT INTO Games (title, genre, description, min_players, max_players, rating, difficulty_level, gif_url)
 VALUES 
 ('Monopoly', 'Strategy', 'Real estate trading game', 2, 6, 4.2, 'Hard', '/gifs/monopoly.gif'),
