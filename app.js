@@ -2,11 +2,13 @@
 // Main entry point for application
 
 const express = require('express');
-const mysql = require('mysql');
+const mariadb = require('mariadb');
 const path = require('path');
-const bodyParser= require('body-parser');
+const multer = require('multer');
+const bodyParser = require('body-parser');
 const app = express();
-const { getHomePage} = require('./routes/index');
+const config = require('./config');
+const { getHomePage,getGameHistoryPage } = require('./routes/index');
 const game = require('./routes/game');
 const game_session = require('./routes/game_session');
 
@@ -19,8 +21,7 @@ const pool = mariadb.createPool({
 	user: config.db.user,
 	password: config.db.password,
 	database: config.db.database,
-	trace: true,
-	// connectionLimit: 20
+	trace: true
 });
 
 pool.getConnection()
@@ -34,16 +35,19 @@ pool.getConnection()
 
 global.pool = pool;
 
+// Configuration
 app.set('port', process.env.port || port);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({ extended: false }));
 
+// Middleware
 // If there are static files, make a public directory
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 app.get('/', getHomePage);
+app.get('/game-history', getGameHistoryPage);
 app.get('/add-game', game.getAdd);
 app.post('/add-game', game.postAdd);
 app.get('/edit-game/:id', game.getEdit);
@@ -51,7 +55,11 @@ app.post('/edit-game/:id', game.postEdit);
 app.post('/delete-game/:id', game.postDelete);
 app.get('/add-game-session', game_session.getAdd);
 app.post('/add-game-session', game_session.postAdd);
+app.get('/edit-game-session/:session_id', game_session.getEdit);
+app.post('/edit-game-session/:session_id', game_session.postEdit);
+app.post('/delete-game-session/:session_id', game_session.postDelete); 
 
+// Start the server
 app.listen(port, () => {
 	console.log(`Server running on port: ${port}`);
 });
