@@ -7,7 +7,7 @@ const config = {
 
     // Database connection parameters
     db: {
-        host: 'localhost',
+        host: 'db',
         user: 'root',
         password: 'wonderful',
         database: 'miechallenge'

@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: mariadb:10.5
+    environment:
+      MYSQL_ROOT_PASSWORD: wonderful   # Set root password
+      MYSQL_DATABASE: miechallenge     # Create the 'miechallenge' database
+    ports:
+      - "3306:3306"                     # Expose the database port
+    volumes:
+      - db_data:/var/lib/mysql          # Persist MariaDB data
+      - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql   # Mount your schema.sql to run at initialization
+
+  app:
+    build: .
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: wonderful
+      DB_NAME: miechallenge
+
+volumes:
+  db_data:
