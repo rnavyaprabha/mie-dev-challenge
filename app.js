@@ -22,8 +22,7 @@ const pool = mariadb.createPool({
 	user: config.db.user,
 	password: config.db.password,
 	database: config.db.database,
-	trace: true,
-	// connectionLimit: 20
+	trace: true
 });
 
 pool.getConnection()
@@ -60,7 +59,7 @@ app.get('/add-game-session', game_session.getAdd);
 app.post('/add-game-session', game_session.postAdd);
 app.get('/edit-game-session/:session_id', game_session.getEdit);
 app.post('/edit-game-session/:session_id', game_session.postEdit);
-app.post('/delete-game-session/:session_id', game_session.postDelete); // Add this line for deleting game sessions
+app.post('/delete-game-session/:session_id', game_session.postDelete); 
 
 // Start the server
 app.listen(port, () => {
