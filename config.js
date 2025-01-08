@@ -3,14 +3,14 @@
 
 const config = {
     // Application port
-    port: 3000,
+    port: process.env.PORT || 3000,
 
     // Database connection parameters
     db: {
-        host: 'db',
-        user: 'root',
-        password: 'wonderful',
-        database: 'miechallenge'
+        host: process.env.DB_HOST || 'db', // Use 'db' as the default host
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || 'wonderful',
+        database: process.env.DB_NAME || 'miechallenge',
     }
 };
 

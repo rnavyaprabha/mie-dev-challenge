@@ -22,6 +22,8 @@ services:
       DB_USER: root
       DB_PASSWORD: wonderful
       DB_NAME: miechallenge
-
+    volumes:
+      - ./public:/usr/src/app/public  # Optional: Mount public directory for persistence
+    
 volumes:
   db_data:
