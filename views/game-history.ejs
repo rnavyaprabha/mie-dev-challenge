@@ -1,6 +1,22 @@
 <%- include('partials/header.ejs') %>
 <div class="container">
     <h2>Game History</h2>
+       <!-- Search Bar -->
+       <form method="GET" action="/game-history" class="search-form">
+        <div class="search-container">
+        <input 
+            type="text" 
+            name="search" 
+            placeholder="Search by game" 
+            class="search-bar"
+            value="<%= searchQuery || '' %>"
+        >
+        <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </form>
+
     <% if (gameSessions && gameSessions.length > 0) { %>
           <ul class="game-sessions-list">
             <% gameSessions.forEach(session => { %>
@@ -61,4 +77,6 @@
     function closeDeletePopup() {
       document.getElementById('deletePopup').style.display = 'none';
     }
+       
+      
   </script>
