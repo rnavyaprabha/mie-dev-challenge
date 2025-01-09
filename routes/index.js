@@ -44,6 +44,7 @@ module.exports = {
 	// Display game history page
 getGameHistoryPage: async (req, res) => {
     let connection;
+	const searchQuery = req.query.search || ''; // Retrieve search query from request
 
     try {
         connection = await pool.getConnection();
@@ -53,8 +54,13 @@ getGameHistoryPage: async (req, res) => {
             connection.query('SELECT * FROM GameSessions'),
         ]);
 
+		 // Filter game sessions by game title if a search query is provided
+		 const filteredGameSessions = gameSessions.filter(session => {
+            const game = games.find(g => g.game_id === session.game_id);
+            return game && game.title.toLowerCase().includes(searchQuery.toLowerCase());
+        });
         // Combine gameSessions with game information
-        const gameSessionsWithGameInfo = gameSessions.map(session => {
+        const gameSessionsWithGameInfo = filteredGameSessions.map(session => {
             const game = games.find(g => g.game_id === session.game_id);
             return { ...session, game };
         });
@@ -64,6 +70,7 @@ getGameHistoryPage: async (req, res) => {
             games,
             gameSessions: gameSessionsWithGameInfo,
             title: 'Game History',
+			searchQuery, // Pass the search query to maintain it in the search bar
         });
     } catch (err) {
         console.error('Error fetching data:', err);
