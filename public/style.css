@@ -242,3 +242,49 @@ h3 {
     background-color:#2e3a55;
 }
 
+.search-form {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    width: 1000px;
+    padding: 10px 40px 10px 10px; /* Padding to make space for the icon */
+    font-size: 16px;
+    border: 1px solid #6842ff;
+    border-radius: 25px; /* Rounded corners for the search bar */
+    box-sizing: border-box;
+}
+
+.search-button {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #1A1A1A; 
+    border: 2px solid #1A1A1A; 
+    color: #6842ff; /* Icon color */
+    cursor: pointer;
+    border-radius: 50%; /* Circular button */
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+}
+
+.search-button i {
+    font-size: 18px;
+}
+
+.search-bar::placeholder {
+    color: white;
+}
