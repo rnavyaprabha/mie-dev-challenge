@@ -3,37 +3,48 @@
 module.exports = {
 	getHomePage: async (req, res) => {
 		let connection;
-
+		const selectedGenre = req.query.genre || ''; // Get the selected genre from query params
 		try {
 			connection = await pool.getConnection();
-
-			// Fetch games and their latest session
-			const [games, latestSessions] = await Promise.all([
-				connection.query('SELECT * FROM Games ORDER BY created_at DESC'),
-				connection.query(
-					`SELECT gs.*
-                    FROM GameSessions gs
-                    INNER JOIN (
-                    SELECT game_id, MAX(CONCAT(session_date, ' ', start_time)) AS latest_datetime
-                    FROM GameSessions
-                    GROUP BY game_id
-                    ) latest
-                    ON gs.game_id = latest.game_id
-                    AND CONCAT(gs.session_date, ' ', gs.start_time) = latest.latest_datetime`
-
-				),
-			]);
-	
+			 // Fetch distinct genres from the Games table
+			 const genresResult = await connection.query('SELECT DISTINCT genre FROM Games');
+			 const genres = genresResult.map(row => row.genre);
+			 // Fetch games filtered by the selected genre, or all games if no genre is selected
+			 const gamesQuery = selectedGenre
+			   ? 'SELECT * FROM Games WHERE genre = ? ORDER BY created_at DESC'
+			   : 'SELECT * FROM Games ORDER BY created_at DESC';
+			 const gamesParams = selectedGenre ? [selectedGenre] : [];
+			 const games = await connection.query(gamesQuery, gamesParams);
+			// Fetch the latest session details for the games
+			const latestSessions = await connection.query(`
+				SELECT gs.*
+				FROM GameSessions gs
+				INNER JOIN (
+				  SELECT game_id, MAX(CONCAT(session_date, ' ', start_time)) AS latest_datetime
+				  FROM GameSessions
+				  GROUP BY game_id
+				) latest
+				ON gs.game_id = latest.game_id
+				AND CONCAT(gs.session_date, ' ', gs.start_time) = latest.latest_datetime
+			  `);
+		
 			// Map the latest session to the respective game
 			const gamesWithLatestSession = games.map(game => {
 				const latestSession = latestSessions.find(session => session.game_id === game.game_id);
 				return { ...game, latestSession };
-			});
-
-			res.render('index', { games: gamesWithLatestSession, title: 'Board Games' });
+			  });
+	
+			 // Render the page with games, genres, and selectedGenre
+			 res.render('index', { 
+				games: gamesWithLatestSession, 
+				genres, 
+				selectedGenre, 
+				title: 'Board Games' 
+			  }); 
 		} catch (err) {
 			console.error('Error fetching data:', err);
-			res.render('index', { games: [], title: 'Board Games' });
+			res.render('index', { games: [], genres: [], selectedGenre: '', title: 'Board Games' });
+
 		} finally {
 			if (connection) {
 				connection.release(); // Release the connection back to the pool
