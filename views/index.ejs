@@ -1,5 +1,17 @@
 <%- include('partials/header.ejs') %>
-      <div class="container">
+<div class="container">
+  <!-- Filter by Genre -->
+  <div class="filter-container">
+    <form class="filter-form">
+      <label class="filter-label">Filter by Genre:</label>
+      <select id="genreFilter" name="genre" class="genre-dropdown">
+        <option value="All" <%= selectedGenre === "All" ? "selected" : "" %>>All</option>
+        <% genres.forEach(genre => { %>
+          <option value="<%= genre %>" <%= genre === selectedGenre ? "selected" : "" %>><%= genre %></option>
+        <% }); %>
+      </select>
+    </form>
+  </div>
         <h2>Available Games</h2>
         <% if (games && games.length > 0) { %>
           <ul class="games-list">
@@ -73,4 +85,24 @@
   function closeDeletePopup() {
     document.getElementById('deletePopup').style.display = 'none';
   }
+  document.addEventListener("DOMContentLoaded", () => {
+    const genreFilter = document.getElementById("genreFilter");
+    const filterLabel = document.querySelector(".filter-label");
+
+    genreFilter.addEventListener("change", () => {
+      const selectedGenre = genreFilter.value;
+
+      // Update label text with selected genre
+      filterLabel.textContent = `Filter by Genre: ${selectedGenre}`;
+
+      // Redirect to filtered URL
+      const currentUrl = window.location.origin;
+      const filteredUrl =
+        selectedGenre === "All"
+          ? currentUrl
+          : `${currentUrl}?genre=${encodeURIComponent(selectedGenre)}`;
+      window.location.href = filteredUrl;
+    });
+  });
+
 </script>
