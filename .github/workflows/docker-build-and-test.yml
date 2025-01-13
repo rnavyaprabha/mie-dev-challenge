@@ -14,11 +14,20 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Set up Docker Compose
-      uses: docker/compose-action@v3
+    - name: Set up Docker
+      run: |
+        # Install Docker CLI
+        sudo apt-get update
+        sudo apt-get install -y docker.io
+        # Docker Compose V2 is included with the Docker CLI now, so no need to install separately
+
+    - name: Verify Docker and Compose installation
+      run: |
+        docker --version
+        docker compose --version  # Note: Use `docker compose` instead of `docker-compose`
 
     - name: Build and Start Services
-      run: docker compose up -d --build
+      run: docker compose up -d --build  # Use `docker compose` instead of `docker-compose`
 
     - name: Wait for Application
       run: |
@@ -27,4 +36,4 @@ jobs:
 
     - name: Test Application
       run: |
-        curl -f http://localhost:3000 || exit 1
+        curl -v http://localhost:3000 || exit 1
