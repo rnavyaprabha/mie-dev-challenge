@@ -65,20 +65,24 @@ Access the application in your web browser at http://localhost:3000.
 Few Screenshots of Website:
 =====
 Home Page
-![alt text](image-7.png)
-![alt text](image-8.png)
-![alt text](image.png)
-![alt text](image-1.png)
+![Homepage](https://github.com/user-attachments/assets/d4dbc0a8-ba61-41ab-bb11-a0e4fce9ce4a)
+![Homepage1](https://github.com/user-attachments/assets/b5269355-76a6-4c72-b98e-bfe19981c1a8)
+
 Add Game
-![alt text](image-2.png)
+![Addgame](https://github.com/user-attachments/assets/e08bf5a7-6782-42d8-bb8f-bf6a79365682)
+
 Add Game Session
-![alt text](image-3.png)
+![Addgamesession](https://github.com/user-attachments/assets/cd2f86f6-d88f-4a3d-a54a-50bd5e09aba5)
+
 Game History
-![alt text](image-4.png)
+![Gamehistory](https://github.com/user-attachments/assets/8c5d15c1-ff9b-449d-9917-1adabb003827)
+
 Edit Game
-![alt text](image-5.png)
+![Editgame](https://github.com/user-attachments/assets/7ac3a9ac-a53c-437f-bb7c-2e8278ec037d)
+
 Edit Game session
-![alt text](image-6.png)
+![Editgamesession](https://github.com/user-attachments/assets/00a67ecc-c51a-42eb-855b-0ea4d8ae6381)
+
 
 Automation
 =====
