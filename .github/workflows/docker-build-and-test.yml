@@ -1,0 +1,33 @@
+name: Docker Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker Image
+      run: docker-compose build
+
+    - name: Start Services
+      run: docker-compose up -d
+
+    - name: Wait for Application
+      run: |
+        echo "Waiting for the application to be ready..."
+        sleep 10
+
+    - name: Test Application
+      run: |
+        curl -f http://localhost:3000 || exit 1
