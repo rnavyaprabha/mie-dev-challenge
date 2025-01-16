@@ -9,42 +9,25 @@ Main Features:
 =====
 
 Game Management
-<<<<<<< HEAD
-* View Games :Displays list of available games along with important information assicated with game
-* Add Games: Add new games with relevant details.
-* Edit Games: Update existing game information effortlessly.
-* Latest Session Display: See the most recent session for each game on the Home Page.
-
-Game Session Management
-* Game History: View a list of game sessions.
-* Add Game Sessions: Record sessions for any game.
-* Multiple game session: Ability to add multiple game session records associated with a game.
-
-Additional Features:
-=====
-* Delete Games: Remove games, with all associated session data automatically managed.
-* Filter Games: Filter games by genre
-* Gif: Add or edit GIFs for games.
-* Edit Game Sessions: Update details of any game session.
-* Delete Game Sessions: Remove specific sessions if no longer needed.
-* Search: Find all sessions of a specific game
-=======
 * View Games: Displays a list of available games along with key information associated with each game.
 * Add Games: Allows adding new games along with relevant details.
 * Edit Games: Enables effortless updating of existing game information.
-* Delete Games: Removes games and automatically manages all associated session data.
-* Filter Games: Filter games by genre for easier navigation.
-* Add/Edit GIFs: Add or edit GIFs to enhance the game's visual representation.
 * Latest Session Display: Shows the most recent session for each game directly on the Home Page
 
 Game Session Management
 * Game History: View a list of all the game sessions.
 * Add Game Sessions: Record new sessions for any game.
 * Multiple Game Sessions: Allows adding multiple game session records associated with a particular game.
+
+Additional Features:
+=====
+
+* Delete Games: Removes games and automatically manages all associated session data.
+* Filter Games: Filter games by genre for easier navigation.
+* Add/Edit GIFs: Add or edit GIFs to enhance the game's visual representation.
 * Edit Game Sessions: Update details of any existing game session.
 * Delete Game Sessions: Remove specific sessions that are no longer needed.
 * Search: Easily search and find all sessions of a specific game.
->>>>>>> f7fd9a1d07c652a24b475b2bc11b8ee51ee2f2d0
 * Automated database and application management using Docker and GitHub Actions.
   
 Technologies Used:
@@ -56,14 +39,9 @@ Technologies Used:
 * Database: MariaDB
 * Automation: Dockerfile and GitHub Actions
 
-<<<<<<< HEAD
-Steps to run the Application with Docker
+Steps to run the Application with Docker:
 =====
 
-=======
-Run the Application with Docker:
-=====
->>>>>>> f7fd9a1d07c652a24b475b2bc11b8ee51ee2f2d0
 * Clone the repository: git clone https://github.com/rnavyaprabha/mie-dev-challenge.git
 * Ensure Docker is installed on your system. If not, install Docker Desktop at https://www.docker.com/get-started/
 * Navigate to the project directory in the terminal.
@@ -75,25 +53,14 @@ Stopping and Removing Services
 * To stop the application:docker-compose down
 * To remove all data and start fresh: docker-compose down --volumes
 
-<<<<<<< HEAD
 Steps to run the Application Manually
-=======
-Run the Application Manually
->>>>>>> f7fd9a1d07c652a24b475b2bc11b8ee51ee2f2d0
 =====
 
 * Clone this repository to your local machine.
 * Install the required dependencies using npm: npm install
 * Configure the database connection settings in config.js to match your database setup.
 * Create the necessary database tables by running the SQL script found in database.sql.
-<<<<<<< HEAD
 * Start the application:`npm start`
-=======
-
-Start the application:
-
-`npm start`
->>>>>>> f7fd9a1d07c652a24b475b2bc11b8ee51ee2f2d0
 * Access the application in your web browser at http://localhost:3000.
 
 Few Screenshots of Website:
