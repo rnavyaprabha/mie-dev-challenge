@@ -39,6 +39,12 @@ Technologies Used:
 * Database: MariaDB
 * Automation: Dockerfile and GitHub Actions
 
+Sample GIF:
+=====
+
+* If you want sample gifs to test the application you can find them under public\test-gifs folder
+
+
 Steps to run the Application with Docker:
 =====
 
